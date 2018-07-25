@@ -1,0 +1,91 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="question-helper">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+      }
+    </style>
+
+<firebase-query
+    path="questions/[[question.$key]]/stats"
+    data="{{stats}}">
+  </firebase-query>
+
+
+      
+        <div>[[question.question]]</div>
+
+        <paper-button raised on-click="send1">[[question.answer1]]</paper-button>
+        <paper-button raised on-click="send2">[[question.answer2]]</paper-button>
+        <paper-button raised on-click="calculateStats">計算</paper-button>
+
+  </template>
+
+  <script>
+    class QuestionHelper extends Polymer.Element {
+      static get is() { return 'question-helper'; }
+     
+      static get properties() {
+        return {
+          question: Object,
+          stats: Object,
+        };
+      }
+
+      calculateStats(){
+          var count1 = 0
+          var count2 = 0
+
+          for(var i=0;i<this.stats.length ;i++) {
+              const stat = this.stats[i]
+            if(stat.choice==1){
+                count1=count1+1     
+            }
+            if(stat.choice==2){
+                count2=count2+1     
+            }
+
+              
+          }
+
+          console.log(count1)
+          console.log(count2)
+              
+      }
+
+      send1(){
+          this.send(1)
+      }
+      
+      send2(){
+          this.send(2)
+      }
+
+      send(choice){
+      const input={
+          choice:choice
+      }    
+      window.firebase.database().ref(`questions/${this.question.$key}/stats`).push(input)
+      }
+
+    }
+
+    window.customElements.define(QuestionHelper.is, QuestionHelper);
+  </script>
+</dom-module>

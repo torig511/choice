@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="helper/question-helper.html">
 
 <dom-module id="my-view1">
   <template>
@@ -32,8 +33,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="card">
       <template is="dom-repeat" items="[[questions]]">
       
-        <div>[[item.question]]</div>
-      
+      <question-helper question="[[item]]"></question-helper>
+
       </template>
     </div>
   </template>
