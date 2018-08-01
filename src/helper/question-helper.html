@@ -33,7 +33,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <paper-button raised on-click="send1">[[question.answer1]]</paper-button>
         <paper-button raised on-click="send2">[[question.answer2]]</paper-button>
-        <paper-button raised on-click="calculateStats">計算</paper-button>
+
+
+        <div>[[result.count1]]</div>
+        <div>[[result.count2]]</div>
+        <div>[[result.percent1]]%</div>
+        <div>[[result.percent2]]%</div>
+        <div>[[result.total]]</div>
 
   </template>
 
@@ -45,24 +51,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return {
           question: Object,
           stats: Object,
+          result: Object,
         };
+      }
+      static get observers() {
+        return [
+          'calculateStats(stats.splices)',
+        ];
       }
 
       calculateStats(){
           var count1 = 0
           var count2 = 0
 
-          for(var i=0;i<this.stats.length ;i++) {
-              const stat = this.stats[i]
+          const stats = this.stats
+
+          for(var i=0;i<stats.length ;i++) {
+              const stat = stats[i]
             if(stat.choice==1){
                 count1=count1+1     
             }
             if(stat.choice==2){
                 count2=count2+1     
             }
-
+      
               
           }
+          var percent1 = Math.round(count1 / stats.length * 100)
+          var percent2 = Math.round(count2 / stats.length * 100)
+          
+          var result = {
+          count1:count1,
+          count2:count2,
+          percent1:percent1,
+          percent2:percent2,
+          total:stats.length
+          }
+          this.set(
+            "result",result
+          )
 
           console.log(count1)
           console.log(count2)
